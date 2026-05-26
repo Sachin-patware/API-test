@@ -1,0 +1,64 @@
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.app-header {
+  margin-bottom: 24px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 12px;
+}
+
+.app-header h1 {
+  margin: 0;
+  color: #1a73e8;
+  font-size: 24px;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.top-section {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.form-container {
+  flex: 1;
+  max-width: 400px;
+}
+
+.filters-container-wrapper {
+  flex: 2;
+}
+
+.error-banner {
+  background-color: #fdf3f2;
+  color: #d93025;
+  padding: 12px;
+  border-radius: 4px;
+  border-left: 4px solid #d93025;
+  font-weight: 500;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .top-section {
+    flex-direction: column;
+  }
+  .form-container, .filters-container-wrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+}
