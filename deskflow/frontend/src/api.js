@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://api-test-59jy.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api-test-59jy.onrender.com/bfhl';
 
 const api = axios.create({
-  baseURL: `${API_URL}/tickets`,
+  baseURL: `${API_URL}/tasks`,
   headers: {
     'Content-Type': 'application/json',
   },
