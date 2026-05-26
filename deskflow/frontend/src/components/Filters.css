@@ -48,6 +48,14 @@
 
 .stats-summary {
   margin-left: auto;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.status-counts {
+  display: flex;
+  gap: 8px;
 }
 
 .stat-badge {
@@ -55,6 +63,12 @@
   border-radius: 16px;
   font-weight: bold;
   font-size: 13px;
+}
+
+.stat-badge.default {
+  background: #f1f3f4;
+  color: #3c4043;
+  border: 1px solid #dadce0;
 }
 
 .stat-badge.warning {

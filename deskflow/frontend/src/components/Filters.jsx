@@ -42,6 +42,12 @@ const Filters = ({ filters, onFilterChange, stats }) => {
 
       {stats && (
         <div className="stats-summary">
+          <div className="status-counts">
+            <span className="stat-badge default">Open: {stats.statusCounts.open}</span>
+            <span className="stat-badge default">In Progress: {stats.statusCounts.in_progress}</span>
+            <span className="stat-badge default">Resolved: {stats.statusCounts.resolved}</span>
+            <span className="stat-badge default">Closed: {stats.statusCounts.closed}</span>
+          </div>
           <span className="stat-badge warning">
             {stats.breachedUnresolvedCount} Breached Unresolved
           </span>
