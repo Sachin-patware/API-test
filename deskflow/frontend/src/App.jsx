@@ -1,32 +1,27 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getTickets, createTicket, updateTicketStatus, getTicketStats } from './api';
+import { getTasks, createTask, updateTask, deleteTask } from './api';
 import Board from './components/Board';
 import CreateTicketForm from './components/CreateTicketForm';
 import Filters from './components/Filters';
 import './App.css';
 
 function App() {
-  const [tickets, setTickets] = useState([]);
-  const [stats, setStats] = useState(null);
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [filters, setFilters] = useState({
-    priority: '',
-    breached: false
+    status: '',
+    minImportance: ''
   });
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const [ticketsData, statsData] = await Promise.all([
-        getTickets(filters),
-        getTicketStats()
-      ]);
-      setTickets(ticketsData);
-      setStats(statsData);
+      const tasksData = await getTasks(filters);
+      setTasks(tasksData);
     } catch (err) {
       console.error(err);
       setError('Failed to load data. Please try again later.');
@@ -43,8 +38,8 @@ function App() {
     try {
       setIsSubmitting(true);
       setError(null);
-      await createTicket(ticketData);
-      await fetchData(); // Refresh board and stats
+      await createTask(ticketData);
+      await fetchData();
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || 'Failed to create ticket.');
@@ -56,12 +51,22 @@ function App() {
   const handleStatusChange = async (id, newStatus) => {
     try {
       setError(null);
-      // Optimistic update could go here, but refetching is safer for stats consistency
-      await updateTicketStatus(id, newStatus);
-      await fetchData(); 
+      await updateTask(id, { status: newStatus });
+      await fetchData();
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || 'Failed to update ticket status.');
+    }
+  };
+
+  const handleDeleteTask = async (id) => {
+    try {
+      setError(null);
+      await deleteTask(id);
+      await fetchData();
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || 'Failed to delete task.');
     }
   };
 
@@ -84,20 +89,20 @@ function App() {
           <div className="filters-container-wrapper">
             <Filters 
               filters={filters} 
-              onFilterChange={setFilters} 
-              stats={stats} 
+              onFilterChange={setFilters}
             />
           </div>
         </section>
 
         {loading ? (
-          <div className="loading-spinner">Loading tickets...</div>
+          <div className="loading-spinner">Loading tasks...</div>
         ) : (
-          <Board 
-            tickets={tickets} 
-            onStatusChange={handleStatusChange} 
-          />
-        )}
+            <Board 
+              tickets={tasks} 
+              onStatusChange={handleStatusChange}
+              onDelete={handleDeleteTask}
+            />
+          )}
       </main>
     </div>
   );

@@ -12,7 +12,13 @@ export const isValidDate = (value) => {
 
 export const isFutureOrToday = (value) => {
   const date = new Date(value);
-  return isValidDate(value) && date.getTime() >= Date.now();
+  if (!isValidDate(value)) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  date.setHours(0, 0, 0, 0);
+
+  return date.getTime() >= today.getTime();
 };
 
 export const normalizeTaskResponse = (task) => task.toObject();

@@ -9,26 +9,27 @@ const api = axios.create({
   },
 });
 
-export const getTickets = async (filters = {}) => {
+export const getTasks = async (filters = {}) => {
   const params = new URLSearchParams();
-  if (filters.priority) params.append('priority', filters.priority);
-  if (filters.breached) params.append('breached', filters.breached);
+  if (filters.status) params.append('status', filters.status);
+  if (filters.minImportance) params.append('minImportance', filters.minImportance);
 
-  const response = await api.get(`/?${params.toString()}`);
+  const query = params.toString();
+  const response = await api.get(query ? `/?${query}` : '/');
   return response.data;
 };
 
-export const createTicket = async (ticketData) => {
-  const response = await api.post('/', ticketData);
+export const createTask = async (taskData) => {
+  const response = await api.post('/', taskData);
   return response.data;
 };
 
-export const updateTicketStatus = async (id, status) => {
-  const response = await api.patch(`/${id}`, { status });
+export const updateTask = async (id, taskData) => {
+  const response = await api.patch(`/${id}`, taskData);
   return response.data;
 };
 
-export const getTicketStats = async () => {
-  const response = await api.get('/stats');
+export const deleteTask = async (id) => {
+  const response = await api.delete(`/${id}`);
   return response.data;
 };

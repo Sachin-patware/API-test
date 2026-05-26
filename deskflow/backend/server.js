@@ -20,8 +20,6 @@ app.get('/', (_req, res) => {
 // Canonical API route for the task manager.
 app.use('/bfhl/tasks', taskRoutes);
 
-
-
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);

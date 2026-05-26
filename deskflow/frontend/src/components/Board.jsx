@@ -2,15 +2,13 @@ import TicketCard from './TicketCard';
 import './Board.css';
 
 const COLUMNS = [
-  { id: 'open', title: 'Open' },
-  { id: 'in_progress', title: 'In Progress' },
-  { id: 'resolved', title: 'Resolved' },
-  { id: 'closed', title: 'Closed' }
+  { id: 'pending', title: 'Pending' },
+  { id: 'completed', title: 'Completed' }
 ];
 
-const Board = ({ tickets, onStatusChange }) => {
+const Board = ({ tickets, onStatusChange, onDelete }) => {
   const getTicketsByStatus = (status) => {
-    return tickets.filter(t => t.status === status);
+    return tickets.filter((t) => t.status === status);
   };
 
   return (
@@ -27,10 +25,11 @@ const Board = ({ tickets, onStatusChange }) => {
                 key={ticket._id} 
                 ticket={ticket} 
                 onStatusChange={onStatusChange}
+                onDelete={onDelete}
               />
             ))}
             {getTicketsByStatus(column.id).length === 0 && (
-              <div className="empty-state">No tickets</div>
+              <div className="empty-state">No tasks</div>
             )}
           </div>
         </div>

@@ -1,58 +1,46 @@
 import './Filters.css';
 
-const Filters = ({ filters, onFilterChange, stats }) => {
+const Filters = ({ filters, onFilterChange }) => {
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     onFilterChange({
       ...filters,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value,
     });
   };
 
   return (
     <div className="filters-container">
       <div className="filter-group">
-        <label htmlFor="priority-filter">Filter by Priority:</label>
-        <select 
-          id="priority-filter" 
-          name="priority" 
-          value={filters.priority} 
+        <label htmlFor="status-filter">Filter by Status:</label>
+        <select
+          id="status-filter"
+          name="status"
+          value={filters.status}
           onChange={handleChange}
         >
-          <option value="">All Priorities</option>
-          <option value="urgent">Urgent</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="completed">Completed</option>
         </select>
       </div>
 
-      <div className="filter-group checkbox-group">
-        <input 
-          type="checkbox" 
-          id="breached-filter" 
-          name="breached" 
-          checked={filters.breached} 
+      <div className="filter-group">
+        <label htmlFor="minImportance">Min Importance:</label>
+        <select
+          id="minImportance"
+          name="minImportance"
+          value={filters.minImportance}
           onChange={handleChange}
-        />
-        <label htmlFor="breached-filter" className="danger-text">
-          Show Only SLA Breached
-        </label>
+        >
+          <option value="">Any</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+          <option value="5">5</option>
+        </select>
       </div>
-
-      {stats && (
-        <div className="stats-summary">
-          <div className="status-counts">
-            <span className="stat-badge default">Open: {stats.statusCounts.open}</span>
-            <span className="stat-badge default">In Progress: {stats.statusCounts.in_progress}</span>
-            <span className="stat-badge default">Resolved: {stats.statusCounts.resolved}</span>
-            <span className="stat-badge default">Closed: {stats.statusCounts.closed}</span>
-          </div>
-          <span className="stat-badge warning">
-            {stats.breachedUnresolvedCount} Breached Unresolved
-          </span>
-        </div>
-      )}
     </div>
   );
 };

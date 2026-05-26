@@ -7,6 +7,7 @@ import {
 } from '../utils/taskHelpers.js';
 
 const allowedUpdateFields = ['title', 'description', 'importance', 'dueDate', 'status'];
+const allowedStatuses = ['pending', 'completed'];
 
 const sendDbError = (res, error) => {
   if (error?.name === 'CastError' || error?.name === 'ValidationError') {
@@ -46,6 +47,10 @@ const validateTaskInput = (payload, { allowPartial = false } = {}) => {
     }
   }
 
+  if (payload.status !== undefined && !allowedStatuses.includes(String(payload.status))) {
+    errors.push('status must be pending or completed');
+  }
+
   return errors;
 };
 
@@ -61,7 +66,7 @@ export const createTask = async (req, res) => {
       description: String(req.body.description).trim(),
       importance: Number(req.body.importance),
       dueDate: new Date(req.body.dueDate),
-      status: 'pending',
+      status: req.body.status ? String(req.body.status) : 'pending',
     });
 
     task.priorityScore = calculatePriorityScore(task);
@@ -79,6 +84,9 @@ export const getTasks = async (req, res) => {
     const query = {};
 
     if (status) {
+      if (!allowedStatuses.includes(String(status))) {
+        return res.status(400).json({ message: 'status must be pending or completed' });
+      }
       query.status = status;
     }
 
@@ -147,6 +155,42 @@ export const deleteTask = async (req, res) => {
     }
 
     return res.json({ message: 'Task deleted successfully' });
+  } catch (error) {
+    return sendDbError(res, error);
+  }
+};
+
+export const getTaskStats = async (_req, res) => {
+  try {
+    const [statusCounts, totalTasks, pendingTasks] = await Promise.all([
+      Task.aggregate([
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+      Task.countDocuments({}),
+      Task.countDocuments({ status: 'pending' }),
+    ]);
+
+    const formattedStatusCounts = {
+      pending: 0,
+      completed: 0,
+    };
+
+    for (const row of statusCounts) {
+      if (row?._id && formattedStatusCounts[row._id] !== undefined) {
+        formattedStatusCounts[row._id] = row.count;
+      }
+    }
+
+    return res.json({
+      totalTasks,
+      pendingTasks,
+      statusCounts: formattedStatusCounts,
+    });
   } catch (error) {
     return sendDbError(res, error);
   }
