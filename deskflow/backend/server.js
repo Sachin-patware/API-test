@@ -20,8 +20,7 @@ app.get('/', (_req, res) => {
 // Canonical API route for the task manager.
 app.use('/bfhl/tasks', taskRoutes);
 
-// Backward-compatible alias for older frontends still calling /tickets.
-app.use('/tickets', taskRoutes);
+
 
 const startServer = async () => {
   try {
